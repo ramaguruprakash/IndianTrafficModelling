@@ -1,0 +1,44 @@
+#! /usr/local/bin/python
+
+# read the video
+# take a fram
+# now analyze the coordinates of it
+# now see how to apply homography get 4 points and then check how the video is
+
+
+
+import cv2
+import numpy as np
+# capture frames from a video
+cap = cv2.VideoCapture('Trimmed_trafficVideo.mp4');
+
+
+# loop runs if capturing has been initialized.
+if True:
+	# reads frames from a video
+	ret, frames = cap.read()
+
+	# Display frames in a window 
+	cv2.line(frames,(650,180),(715,180),(255,0,0),5)
+	cv2.line(frames,(650,180),(1,670),(255,0,0),5)
+	cv2.line(frames,(1,670),(595,718),(255,0,0),5)
+	cv2.line(frames,(595,718),(715,180),(255,0,0),5)
+	cv2.line(frames,(163,0),(595,0),(255,0,0),5)
+	cv2.line(frames,(163,0),(163,718),(255,0,0),5)
+	cv2.line(frames,(595,0),(595,718),(255,0,0),5)
+	cv2.line(frames,(163,718),(595,718),(255,0,0),5)
+#163x720
+	# Transform Matrix
+	pts_src = np.array([[650, 180], [715, 180], [595, 718], [1, 670]], dtype=float);
+	pts_dst = np.array([[163, 0], [595, 0], [595, 718], [163, 718]], dtype=float);
+	H, status = cv2.findHomography(pts_src, pts_dst);
+	print H;
+	print frames.shape
+	homo_transform = cv2.warpPerspective(frames, H, (frames.shape[1], frames.shape[0]))
+	cv2.imshow('original', frames)
+	cv2.imshow('transform', homo_transform)
+	# Wait for Any key to stop
+	cv2.waitKey(0)
+	cv2.destroyAllWindows()
+
+# De-allocate any associated memory usage

@@ -1,0 +1,3 @@
+From SUMO output create a script which will convert the sumo output to set of feature vectors and create a dataloader.
+
+Resource to look if stuck at issues for variable length features : Dynamic Time Warping (DTW)
