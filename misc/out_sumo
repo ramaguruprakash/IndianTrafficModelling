@@ -1,0 +1,17 @@
+infer 1234  True /Users/gramaguru/ComputerVision/computer-vision/vehicle-trajectory-data/traffic-new.xml
+Loaded model from disk
+Ignored vehicles  []
+size is  0
+Frame Number  0 0
+original
+[]
+complete simulation
+[]
+simulated feature vecs  []
+simulated output  []
+Updated  []
+Number of vehicles accelerating  0
+Accelerating vehicles  {}
+Number is  0
+Frame Number  1 0
+Simulated Vehicles 1  []

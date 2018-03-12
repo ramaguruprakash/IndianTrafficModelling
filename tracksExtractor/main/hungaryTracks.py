@@ -31,8 +31,6 @@ class Track:
 		self.width  = w
 		self.track = [(x,y)]
 		self.completed = 0
-		self.part_dispx = 0.0
-		self.part_dispy = 0.0
 		self.trackno = no
                 self.vehicleType = vehicleType
 
@@ -107,11 +105,23 @@ def getHistogram(vehicle, track, frames):
         histogram_vehicle = histogram_vehicle.astype(np.float32)
         return histogram_vehicle, histogram_track
 
+def velDist(vehicle, track):
+    if len(track.track) == 1:
+        return 0
+    vel1y = vehicle[1] - track.track[-1][0]
+    vel1x = vehicle[0] - track.track[-1][1]
+
+    vel2y = track.track[-1][0] - track.track[-2][0]
+    vel2x = track.track[-1][1] - track.track[-2][1]
+    return math.sqrt(math.pow(vel1x-vel2x,2)+math.pow(vel1y-vel2y,2))
+
+
 def getSimDist(vehicle, track, frames):
         #vehicle_hist, track_hist = getHistogram(vehicle, track,  frames)
         #print type(vehicle_hist) , type(track_hist)
         #return math.sqrt(math.pow(vehicle[0]-track.track[-1][1],2)+math.pow(vehicle[1]-track.track[-1][0],2)) + cv2.compareHist(vehicle_hist, track_hist, cv2.cv.CV_COMP_CHISQR);
-        return math.sqrt(math.pow(vehicle[0]-track.track[-1][1],2)+math.pow(vehicle[1]-track.track[-1][0],2));
+        alpha = 0
+        return math.sqrt(math.pow(vehicle[0]-track.track[-1][1],2)+math.pow(vehicle[1]-track.track[-1][0],2)) + alpha*velDist(vehicle, track);
 
 def getMatrix(vehicles, tracks, frames):
 	mat = 1000*np.ones((1000,1000));
@@ -290,15 +300,20 @@ def visualizeTracks(total_frames, videoFile, reSize=None):
                     if vehicle[2] > 100 or vehicle[3] > 100:
                            continue
                     actual_vehicles.append(vehicle)
-                    actual_vehicles = filterVehicles(actual_vehicles) 
+                    actual_vehicles = filterVehicles(actual_vehicles)
                 actual_vehicles = np.array(actual_vehicles)
 		trackNo = [0]*(actual_vehicles.shape[0])
-		hungarianMatrix, hungarianAssignment = getHungary(actual_vehicles, tracks, frames)	
+		hungarianMatrix, hungarianAssignment = getHungary(actual_vehicles, tracks, frames)
 		tracks, trackNo, completed_tracks = updateTracks(hungarianAssignment, tracks, actual_vehicles, vehicleTypes, hungarianMatrix, trackNo, completed_tracks)
+                '''
+                    getTransformedTracks
+                    getTransformedVehicles
+
+                '''
 		frames = drawVehicles(frames, actual_vehicles, trackNo)
 		frames, tracks, visual = printTracks(frames, tracks, visual)
                 root = store_tracks_xml(tracks, root, fno)
-		#print fno, vehicles.shape[0], len(completed_tracks) , len(tracks)	
+		#print fno, vehicles.shape[0], len(completed_tracks) , len(tracks)
 		cv2.imshow("Frames", frames)
 		#drawTracks(visual, tracks)
                 if cv2.waitKey(33) == 27:

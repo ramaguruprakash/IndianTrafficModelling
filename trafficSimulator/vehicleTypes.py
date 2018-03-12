@@ -31,8 +31,8 @@ class VehicleTypes:
                 return dic[c]
 
 	def sample(self):
-		print self.classes
-		print self.prob
+		#print self.classes
+		#print self.prob
                 prob  = [self.prob[x] for x in self.prob.keys()]
 		cl = np.random.choice(self.classes, 1, p=prob)
 		#cl = randint(0, len(self.classes)-1)
